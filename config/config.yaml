@@ -1,0 +1,16 @@
+CRICSHEET :
+      URL : "https://cricsheet.org/downloads/ipl_csv2.zip"
+      EXTRACT_DIR : "data/raw/cricsheet"
+
+PATHS :
+      RAW_DATA : "data/raw"
+      SCRAPED_DATA : "data/raw/scraped"
+
+SCRAPER :
+      IPL_SQUADS_URL : "https://www.espncricinfo.com/series/indian-premier-league-2024-1410320/squads"
+      POLL INTERVAL SECONDS : 1800
+
+DATABRICKS :
+      BRONZE_DB : "ipl_bronze"
+      SILVER_DB : "ipl_silver"
+      GOLD_DB : "ipl_gold"

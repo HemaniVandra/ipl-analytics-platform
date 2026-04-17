@@ -6,11 +6,17 @@ Created on Thu Apr 16 16:11:34 2026
 """
 
 import os
+import sys
 import zipfile
 import requests
 import pandas as pd
 from pathlib import Path
 from datetime import datetime, timezone
+
+PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
+sys.path.append(os.path.join(PROJECT_ROOT, 'config'))
+
+import config
 
 class Loader(object) :
     """
@@ -18,15 +24,14 @@ class Loader(object) :
     """
 
     def __init__(self) :
-        self.cricsheet_url = 'https://cricsheet.org/downloads/ipl_csv2.zip'
-        self.raw_data_dir = Path('data/raw/cricsheet')
-
+        self.config_obj = config.Config()
+        
     def download_cricsheet(self, dest_dir) :
         dest_dir.mkdir(parents = True, exist_ok = True)
         zip_path = dest_dir / "ipl_csv2.zip"
 
         print("Downloading Cricsheet IPL data...")
-        response = requests.get(self.cricsheet_url, stream = True)
+        response = requests.get(self.config_obj.cricsheet_url, stream = True)
         response.raise_for_status()
 
         with open(zip_path, 'wb') as f :
@@ -108,14 +113,14 @@ class Loader(object) :
         print(f"Saved {name} -> {out_path} ({len(df):,} rows)")
 
     def main(self) :
-        zip_path = self.download_cricsheet(self.raw_data_dir)
-        extract_dir = self.extract_cricsheet(zip_path, self.raw_data_dir)
+        zip_path = self.download_cricsheet(self.config_obj.raw_data_dir)
+        extract_dir = self.extract_cricsheet(zip_path, self.config_obj.raw_data_dir)
 
         deliveries = self.load_deliveries(extract_dir)
         match_info = self.load_match_info(extract_dir)
 
-        self.save_to_parquet(deliveries, "raw_deliveries", self.raw_data_dir)
-        self.save_to_parquet(match_info, "raw_match_info", self.raw_data_dir)
+        self.save_to_parquet(deliveries, "raw_deliveries", self.config_obj.raw_data_dir)
+        self.save_to_parquet(match_info, "raw_match_info", self.config_obj.raw_data_dir)
 
         print("\nSample delivery columns:", deliveries.columns.tolist())
         print(deliveries.head(3))
