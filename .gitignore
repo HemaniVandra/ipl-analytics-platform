@@ -1,0 +1,3 @@
+.env
+ingestion/loaders/data/
+ingestion/scrapers/data/
