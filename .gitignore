@@ -1,3 +1,7 @@
 .env
 ingestion/loaders/data/
 ingestion/scrapers/data/
+
+__pycache__/
+*.py[cod]
+*$py.class
