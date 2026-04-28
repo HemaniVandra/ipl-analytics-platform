@@ -1,0 +1,30 @@
+ipl_catalog                          ← Unity Catalog (top level)
+│
+├── raw_data                         ← Schema for storing raw files (Volumes live here)
+│   ├── cricsheet_files/             ← Volume: stores your uploaded Cricsheet CSVs
+│   ├── checkpoints/                 ← Volume: stores Auto Loader checkpoint files
+│   │   ├── bronze_deliveries/       ← Folder: checkpoint for deliveries stream
+│   │   ├── bronze_players/          ← Folder: checkpoint for players stream  
+│   │   └── schema/                  ← Folder: Auto Loader tracks schema changes here
+│   └── bronze/                      ← Volume: stores scraped data before loading
+│       ├── deliveries/              ← Folder: raw delivery parquet file #no need to create-not used
+│       └── match_info/              ← Folder: raw match info parquet file
+│       └── players/                 ← Folder: raw scraped player parquet file
+│
+├── bronze                           ← Schema for Bronze Delta tables
+│   ├── raw_deliveries               ← Delta Table: ball-by-ball delivery data
+│   └── raw_players                  ← Delta Table: scraped player data
+│
+├── silver                           ← Schema for Silver Delta tables
+│   ├── deliveries                   ← Delta Table: cleaned deliveries
+│   ├── matches                      ← Delta Table: cleaned match info
+│   ├── players                      ← Delta Table: SCD2 player history
+│   └── venues                       ← Delta Table: venue details
+│
+└── gold                             ← Schema for Gold Delta tables
+    ├── player_season_stats          ← Delta Table: batting + bowling aggregates
+    ├── team_win_rates               ← Delta Table: win/loss per team per season
+    ├── bowler_economy               ← Delta Table: economy by phase
+    ├── head_to_head                 ← Delta Table: team vs team records
+    ├── venue_profile                ← Delta Table: venue batting stats
+    └── match_summary                ← Delta Table: one row per match

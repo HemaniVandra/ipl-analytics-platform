@@ -1,0 +1,20 @@
+dbt/
+├── dbt_project.yml
+├── profiles.yml
+├── packages.yml
+├── models/
+│   ├── staging/
+│   │   ├── stg_deliveries.sql
+│   │   ├── stg_matches.sql
+│   │   ├── stg_players.sql
+│   │   └── schema.yml
+│   ├── gold/
+│   │   ├── player_season_stats.sql
+│   │   ├── team_win_rates.sql
+│   │   ├── bowler_economy.sql
+│   │   ├── head_to_head.sql
+│   │   ├── venue_profile.sql
+│   │   ├── match_summary.sql
+│   │   └── schema.yml
+└── macros/
+    └── generate_schema_name.sql

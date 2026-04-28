@@ -1,0 +1,19 @@
+s3://ipl-analytics-raw-data/
+│
+├── cricsheet/
+│   ├── extracted/
+│   │   ├── 1359475.csv              ← upload_cricsheet_csvs_to_s3()
+│   │   └── ... (900+ files)
+│   └── raw_match_info.parquet       ← upload_dataframe_to_s3()
+│
+├── scraped/
+│   └── raw_players.parquet          ← save_players_to_s3()
+│
+├── live_scores/
+│   ├── 20240322_143000_live.json    ← upload_live_scores_to_s3()
+│   └── latest.json                  ← upload_latest_pointer()
+│
+└── checkpoints/
+    ├── bronze_deliveries/           ← Auto Loader writes here automatically
+    ├── bronze_live_scores/          ← Auto Loader writes here automatically
+    └── schema/                      ← Auto Loader writes here automatically

@@ -1,6 +1,16 @@
 .env
-ingestion/loaders/data/
-ingestion/scrapers/data/
+tests/
+env/
+
+# ignore all the folders named 'data'
+**/data/
+
+# Python cache files
+**/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
 
 __pycache__/
 *.py[cod]

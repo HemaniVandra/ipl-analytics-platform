@@ -5,11 +5,14 @@ Created on Fri Apr 17 14:05:12 2026
 @author: Hemani Vandra
 """
 import os
+import io
+import boto3
 import sys
 import time
 import traceback
 from pathlib import Path
 from datetime import datetime, timezone
+from dotenv import load_dotenv
 import pandas as pd
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -19,6 +22,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.action_chains import ActionChains
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
+load_dotenv(PROJECT_ROOT / ".env")
 sys.path.append(os.path.join(PROJECT_ROOT, 'config'))
 import config
 
@@ -31,6 +35,18 @@ class Scraper(object) :
         self.config_obj = config.Config()
         self.scraped_data = self.config_obj.scraped_data
         self.ipl_squads_url = self.config_obj.ipl_squads_url
+        self.s3_bucket = os.getenv("S3_BUCKET")
+        self.aws_region = os.getenv("AWS_REGION")
+        self.aws_access_key = os.getenv("AWS_ACCESS_KEY_ID")
+        self.aws_secret_access_key = os.getenv("AWS_SECRET_ACCESS_KEY")
+
+        # Initialize S3 client
+        self.s3_client = boto3.client(
+            "s3",
+            aws_access_key_id = self.aws_access_key,
+            aws_secret_access_key = self.aws_secret_access_key,
+            region_name = self.aws_region
+        )
 
     def get_driver(self) :
         """
@@ -38,12 +54,21 @@ class Scraper(object) :
         """
         options = Options()
         options.add_argument("--headless")
+        options.add_argument("--no-sandbox")
+        options.add_argument("--disable-dev-shm-usage")
+        options.add_argument("--window-size=1920,1080")
+        options.add_argument(
+            "user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+        )
         driver = webdriver.Chrome(options = options)
 
         driver.delete_all_cookies()
         return driver
 
     def scrape_team_squads(self, url) :
+        """Scrape IPL team squads from the given URL
+        """
         driver = self.get_driver()
         players = []
 
@@ -99,7 +124,32 @@ class Scraper(object) :
         
         return players
 
-    def save_players(players) :
+    def save_players_to_s3(self, players) :
+        """
+        Save scraped player data to S3 as Parquet
+        Uses in-memory buffer - no local file creation
+        Returns the S3 path of the uploaded file
+        """
+        df = pd.DataFrame(players)
+
+        # write to in-memory buffer
+        buffer = io.BytesIO()
+        df.to_parquet(buffer, index=False)
+        buffer.seek(0)
+
+        s3_key = f"scraped/raw_players.parquet"
+        self.s3_client.put_object(
+            Bucket = self.s3_bucket,
+            Key = s3_key,
+            Body = buffer.getvalue(),
+            ContentType = "application/octet-stream"
+        )
+
+        s3_path = f"s3://{self.s3_bucket}/{s3_key}"
+        print(f"Saved {len(df)} players to {s3_path}")
+        return s3_path
+
+    def save_players(self, players) :
         """
         Save scraped player data to Parquet
         """
@@ -116,9 +166,12 @@ class Scraper(object) :
         """
         players = self.scrape_team_squads(self.ipl_squads_url)
         self.save_players(players)
-        print("Scraping completed successfully!")
+        print(f"\n{'='*50}")
+        print("Scraper pipeline complete")
+        print(f"  Players scraped : {len(players)}")
+        print(f"  Teams scraped   : {len(set(p['team'] for p in players))}")
+        print(f"{'='*50}")
 
 if __name__ == "__main__" :
     scraper = Scraper()
     scraper.main()
-    print(df[['team', 'player_name']].to_string(index=False))

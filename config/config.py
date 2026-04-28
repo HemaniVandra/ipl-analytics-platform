@@ -22,9 +22,13 @@ class Config(object) :
 
         self.raw_data = Path(config['PATHS']['RAW_DATA'])
         self.scraped_data = Path(config['PATHS']['SCRAPED_DATA'])
+        self.live_scores_data = Path(config['PATHS']['LIVE_SCORES'])
 
         self.ipl_squads_url = config['SCRAPER']['IPL_SQUADS_URL']
         self.poll_interval_seconds = config['SCRAPER']['POLL INTERVAL SECONDS']
+
+        self.cricapi_base_url = config['CRICAPI']['BASE_URL']
+        self.cricapi_ipl_keyword = config['CRICAPI']['IPL_KEYWORD']
 
         self.bronze_db = config['DATABRICKS']['BRONZE_DB']
         self.silver_db = config['DATABRICKS']['SILVER_DB']

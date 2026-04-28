@@ -1,0 +1,19 @@
+name:   ipl_analytics
+version: 1.0.0
+config-version: 2
+
+profile: ipl_databricks
+
+modell-paths: ["models"]
+macro-paths: ["macros"]
+
+models :
+  ipl_analytics:
+    staging:
+      +materialized: view
+      +schema: ipl_catalog.silver
+    gold:
+      +materialized: table
+      +schema: ipl_catalog.gold
+      +file-format: delta
+      +location-root: /ipl_catalog/gold

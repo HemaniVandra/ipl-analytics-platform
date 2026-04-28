@@ -5,10 +5,19 @@ CRICSHEET :
 PATHS :
       RAW_DATA : "data/raw"
       SCRAPED_DATA : "data/raw/scraped"
+      LIVE_SCORES : "data/raw/live_scores"
 
 SCRAPER :
       IPL_SQUADS_URL : "https://www.espncricinfo.com/series/indian-premier-league-2024-1410320/squads"
       POLL INTERVAL SECONDS : 1800
+
+CRICAPI :
+      BASE_URL : "https://api.cricapi.com/v1"
+      IPL_KEYWORD : "Indian Premier League"
+
+S3 :
+      BUCKET_NAME : "ipl-analytics-raw-data"
+      region : "ap-south-1"
 
 DATABRICKS :
       BRONZE_DB : "ipl_bronze"

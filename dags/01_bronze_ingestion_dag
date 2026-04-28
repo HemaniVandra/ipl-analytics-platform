@@ -1,0 +1,22 @@
+01_bronze_ingestion.ipynb
+│
+├── Section 0 — Setup
+│   ├── Create catalog, schemas, volumes
+│   └── Create all folder paths
+│
+├── Section 1 — Bronze Deliveries    ← already written
+│   ├── Define delivery schema
+│   ├── Auto Loader stream
+│   └── Verify raw_deliveries table
+│
+├── Section 2 — Bronze Match Info    ← just written now
+│   ├── Read _info.csv files
+│   ├── Parse key-value rows
+│   ├── Write raw_match_info table
+│   └── Verify table
+│
+└── Section 3 — Bronze Players       ← already written
+    ├── Read raw_players.parquet
+    ├── Add metadata columns
+    ├── Write raw_players table
+    └── Verify table

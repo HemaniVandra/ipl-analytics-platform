@@ -1,0 +1,28 @@
+ipl-analytics-platform/
+├── ingestion/
+│   ├── scrapers/
+│   │   ├── cricinfo_scraper.py
+│   │   └── live_scores.py
+│   └── loaders/
+│       └── cricsheet_loader.py
+├── dags/
+│   ├── nightly_pipeline.py
+│   └── live_match_dag.py
+├── dbt/
+│   ├── models/
+│   │   ├── bronze/
+│   │   ├── silver/
+│   │   └── gold/
+│   └── dbt_project.yml
+├── notebooks/
+│   ├── 01_bronze_ingestion.ipynb
+│   ├── 02_silver_transforms.ipynb
+│   └── 03_gold_aggregation.ipynb
+├── expectations/
+│   └── suites/
+├── tests/
+├── config/
+│   └── config.yaml
+├── .env.example
+├── .gitignore
+└── requirements.txt
