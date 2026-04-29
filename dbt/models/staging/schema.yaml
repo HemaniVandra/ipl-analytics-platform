@@ -1,0 +1,65 @@
+version: 2
+
+models:
+  - name: stg_deliveries
+    description: >
+      Staging model over Silver deliveries table.
+      Casts all columns to correct types, adds derived fields
+      like is_boundary, is_six, is_dot_ball, is_wicket and phase.
+      Materialized as view — no storage cost.
+    columns:
+      - name: match_id
+        description: "Unique match identifier"
+        tests: [not_null]
+      - name: over_number
+        description: "Over number 1-20"
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: "over_number between 1 and 20"
+      - name: runs_off_bat
+        description: "Runs scored off the bat — excludes extras"
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: "runs_off_bat >= 0"
+      - name: phase
+        description: "Phase of play — powerplay, middle or death"
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['powerplay', 'middle', 'death']
+
+  - name: stg_matches
+    description: >
+      Staging model over Silver matches table.
+      Adds derived fields like loser, toss_winner_won.
+      Materialized as view — no storage cost.
+    columns:
+      - name: match_id
+        description: "Unique match identifier"
+        tests: [not_null, unique]
+      - name: match_result
+        description: "Match outcome"
+        tests:
+          - accepted_values:
+              values: ['completed', 'tie', 'no_result', 'cancelled']
+      - name: toss_decision
+        description: "What toss winner chose — bat or field"
+        tests:
+          - accepted_values:
+              values: ['bat', 'field']
+
+  - name: stg_players
+    description: >
+      Staging model over Silver players SCD2 table.
+      Filters to only currently active records (is_current = true).
+      One row per player showing their current team.
+    columns:
+      - name: player_id
+        description: "Unique Cricinfo player ID extracted from URL"
+        tests: [not_null, unique]
+      - name: player_name
+        description: "Player name as scraped from Cricinfo"
+        tests: [not_null]
+      - name: team
+        description: "Current team — standardised name"
+        tests: [not_null]

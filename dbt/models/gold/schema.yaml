@@ -1,0 +1,131 @@
+version: 2
+
+models:
+  - name: player_season_stats
+    description: >
+      Batting and bowling statistics aggregated per player per seaon. Combines deliveries data to calculate strike rates, averages, sconomy rates and boundary percentages. Uses full outer join so players who only bat or bowl still appear.
+    columns:
+      - name: player_name
+        description: "Player name as recorded in Cricsheet delivery data"
+        tests: [not_null]
+      - name: season
+        description: "IPL season start year e.g. 2022"
+        tests: [not_null]
+      - name: team
+        description: "Team the player represented in this season"
+        tests: [not_null]
+      - name: strike_rate
+        description: "Batting strike rate - runs per 100 balls faced"
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: "strike_rate >= 0 or strike_rate is null"
+      - name: economy_rate
+        description: "Bowling economy - runs conceded per over"
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: "economy_rate >= 0 or economy_rate is null"
+  
+  - name: team_win_rate
+    description: >
+      Win/loss record per team per season.
+      Includes toss impact analysis and breakdown of wins
+      batting first vs chasing.
+    columns:
+      - name: team
+        description: "IPL team name - standardised"
+        tests: [not_null]
+      - name: season
+        description: "IPL season start year"
+        tests: [not_null]
+      - name: win_pct
+        description: "Win percentage - wins/total matches*100"
+        tests:
+          - dbt_utils.expression_is_true::
+            expression: "win_pct between 0 and 100"
+
+  - name: venue_avg_scores
+    description: >
+      Batting and match statistics aggregated per venue.
+      Covers average first and second innings totals,
+      powerplay scores, boundary rates, and toss impact.
+      Excludes DLS affected matches for cleaner averages.
+    columns:
+      - name: venue
+        description: "Stadium name — as recorded in Cricsheet"
+        tests: [not_null, unique]
+      - name: total_matches
+        description: "Total IPL matches played at this venue"
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: "total_matches > 0"
+      - name: avg_first_innings_total
+        description: "Average runs scored by team batting first"
+      - name: highest_successful_chase
+        description: "Highest second innings total that resulted in a win"
+      - name: bat_first_win_pct
+        description: "Win % when team elects to bat first after winning toss"
+      - name: field_first_win_pct
+        description: "Win % when team elects to field first after winning toss"
+
+  - name: head_to_head
+    description: >
+      Head to head win records between every pair of IPL teams.
+      Teams are ordered alphabetically so each pair appears
+      exactly once — MI vs CSK is same as CSK vs MI.
+    columns:
+      - name: team_a
+        description: "Alphabetically first team in the matchup"
+        tests: [not_null]
+      - name: team_b
+        description: "Alphabetically second team in the matchup"
+        tests: [not_null]
+      - name: total_matches
+        description: "Total matches between this team pair"
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: "total_matches = team_a_wins + team_b_wins + ties"
+
+  - name: match_summary
+    description: >
+      One fully denormalised row per match.
+      Joins match metadata with first and second innings scores.
+      Primary table for match-level dashboard filters.
+    columns:
+      - name: match_id
+        description: "Unique Cricsheet match identifier"
+        tests: [not_null, unique]
+      - name: season
+        description: "IPL season start year"
+        tests: [not_null]
+      - name: match_result
+        description: "Match outcome — completed, tie, no_result or cancelled"
+        tests:
+          - accepted_values:
+              values: ['completed', 'tie', 'no_result', 'cancelled']
+
+  - name: venue_profile
+    description: "Batting and toss stats aggregated per venue"
+    columns:
+      - name: venue
+        tests: [not_null, unique]
+
+  - name: bowler_economy
+    description: >
+      Bowling economy rates split by phase of play.
+      Powerplay (overs 1-6), middle (7-15), death (16-20).
+      Only includes bowlers with at least 1 full over in that phase.
+    columns:
+      - name: player_name
+        description: "Bowler name"
+        tests: [not_null]
+      - name: phase
+        description: "Phase of play — powerplay, middle or death"
+        tests:
+          - accepted_values:
+              values: ['powerplay', 'middle', 'death']
+      - name: economy_rate
+        description: "Runs conceded per over in this phase"
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: "economy_rate >= 0"
+
