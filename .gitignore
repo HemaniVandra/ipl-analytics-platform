@@ -1,5 +1,4 @@
 .env
-tests/
 env/
 
 # ignore all the folders named 'data'
