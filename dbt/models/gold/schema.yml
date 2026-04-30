@@ -18,14 +18,16 @@ models:
         description: "Batting strike rate - runs per 100 balls faced"
         tests:
           - dbt_utils.expression_is_true:
-              expression: "strike_rate >= 0 or strike_rate is null"
+              arguments:
+                expression: ">= 0 or strike_rate is null"
       - name: economy_rate
         description: "Bowling economy - runs conceded per over"
         tests:
           - dbt_utils.expression_is_true:
-              expression: "economy_rate >= 0 or economy_rate is null"
+              arguments:
+                expression: ">= 0 or economy_rate is null"
   
-  - name: team_win_rate
+  - name: team_win_rates
     description: >
       Win/loss record per team per season.
       Includes toss impact analysis and breakdown of wins
@@ -40,8 +42,9 @@ models:
       - name: win_pct
         description: "Win percentage - wins/total matches*100"
         tests:
-          - dbt_utils.expression_is_true::
-            expression: "win_pct between 0 and 100"
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: "between 0 and 100"
 
   - name: venue_avg_scores
     description: >
@@ -57,7 +60,8 @@ models:
         description: "Total IPL matches played at this venue"
         tests:
           - dbt_utils.expression_is_true:
-              expression: "total_matches > 0"
+              arguments:
+                expression: "> 0"
       - name: avg_first_innings_total
         description: "Average runs scored by team batting first"
       - name: highest_successful_chase
@@ -83,7 +87,8 @@ models:
         description: "Total matches between this team pair"
         tests:
           - dbt_utils.expression_is_true:
-              expression: "total_matches = team_a_wins + team_b_wins + ties"
+              arguments:
+                expression: "= team_a_wins + team_b_wins + ties"
 
   - name: match_summary
     description: >
@@ -101,7 +106,8 @@ models:
         description: "Match outcome — completed, tie, no_result or cancelled"
         tests:
           - accepted_values:
-              values: ['completed', 'tie', 'no_result', 'cancelled']
+              arguments:
+                values: ['completed', 'tie', 'no_result', 'cancelled']
 
   - name: venue_profile
     description: "Batting and toss stats aggregated per venue"
@@ -122,10 +128,12 @@ models:
         description: "Phase of play — powerplay, middle or death"
         tests:
           - accepted_values:
-              values: ['powerplay', 'middle', 'death']
+              arguments:
+                values: ['powerplay', 'middle', 'death']
       - name: economy_rate
         description: "Runs conceded per over in this phase"
         tests:
           - dbt_utils.expression_is_true:
-              expression: "economy_rate >= 0"
+              arguments:
+                expression: ">= 0"
 

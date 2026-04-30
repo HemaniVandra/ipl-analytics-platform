@@ -4,13 +4,13 @@ WITH delivery_agg AS (
               match_id,
               innings,
               SUM(total_runs) AS innings_total,
-              SUN(CASE WHEN over_number <= 6
+              SUM(CASE WHEN over_number <= 6
                         THEN total_runs ELSE 0 END) AS powerplay_runs,
               SUM(CASE WHEN over_number >= 15
                         THEN total_runs ELSE 0 END) AS death_runs,
               SUM(CASE WHEN is_six THEN 1 ELSE 0 END) AS sixes,
               SUM(CASE WHEN is_boundary THEN 1 ELSE 0 END) AS boundaries
-  FROM        {{REF('stg_deliveries')}}
+  FROM        {{ref('stg_deliveries')}}
   GROUP BY    venue,
               season,
               match_id,
@@ -31,7 +31,7 @@ venue_match AS (
               m.toss_decision,
               m.toss_winner_won
   FROM        delivery_agg d
-  LEFT JOIN   {{REF('stg_matches')}} m
+  LEFT JOIN   {{ref('stg_matches')}} m
   ON          d.match_id = m.match_id
 ),
 

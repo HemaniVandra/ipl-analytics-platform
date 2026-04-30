@@ -12,21 +12,24 @@ models:
         description: "Unique match identifier"
         tests: [not_null]
       - name: over_number
-        description: "Over number 1-20"
+        description: "Over number 0-19"
         tests:
           - dbt_utils.expression_is_true:
-              expression: "over_number between 1 and 20"
+              arguments:
+                expression: "between 0 and 19"
       - name: runs_off_bat
         description: "Runs scored off the bat — excludes extras"
         tests:
           - dbt_utils.expression_is_true:
-              expression: "runs_off_bat >= 0"
+              arguments:
+                expression: ">= 0"
       - name: phase
         description: "Phase of play — powerplay, middle or death"
         tests:
           - not_null
           - accepted_values:
-              values: ['powerplay', 'middle', 'death']
+              arguments:
+                values: ['powerplay', 'middle', 'death']
 
   - name: stg_matches
     description: >
@@ -41,12 +44,14 @@ models:
         description: "Match outcome"
         tests:
           - accepted_values:
-              values: ['completed', 'tie', 'no_result', 'cancelled']
+              arguments:
+                values: ['completed', 'tie', 'no_result', 'cancelled']
       - name: toss_decision
         description: "What toss winner chose — bat or field"
         tests:
           - accepted_values:
-              values: ['bat', 'field']
+              arguments:
+                values: ['bat', 'field']
 
   - name: stg_players
     description: >

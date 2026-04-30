@@ -1,12 +1,12 @@
 -- economy rates split by phase: powerplay /  middle / death
 
 with phase_stats AS (
-  SELECT    bowler,
+  SELECT    bowler as player_name,
             season,
             bowling_team AS team,
             phase,
             COUNT(DISTINCT match_id) AS matches,
-            SUM(CASE WHEN no_balls = 0 AND wides = 0 THEN 1 ELSE 0 END) AS legal_balls,
+            SUM(CASE WHEN noballs = 0 AND wides = 0 THEN 1 ELSE 0 END) AS legal_balls,
             SUM(runs_off_bat + extras) AS runs_conceded,
             SUM(CASE WHEN is_wicket AND wicket_type NOT IN (
               'run out',

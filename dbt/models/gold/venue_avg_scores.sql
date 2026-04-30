@@ -20,7 +20,7 @@ WITH delivery_agg AS (
 
               -- Wickets
               SUM(CASE WHEN is_wicket THEN 1 ELSE 0 END) AS wickets_fallen
-  FROM        {{REF('stg-deliveries')}}
+  FROM        {{ref('stg_deliveries')}}
   GROUP BY    venue,
               match_id,
               innings,
@@ -59,11 +59,11 @@ venue_match_summary AS (
   FROM        first_innings f1
   LEFT JOIN   second_innings f2
   ON          f1.match_id = f2.match_id
-  LEFT JOIN   {{REF('stg-matches')}} m
+  LEFT JOIN   {{ref('stg_matches')}} m
   ON          f1.match_id = m.match_id
 ),
 
-agrregated AS (
+aggregated AS (
   SELECT      venue,
               
               -- match counts

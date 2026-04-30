@@ -5,7 +5,7 @@ WITH match_score AS (
               SUM(total_runs) AS innings_total,
               SUM(is_wicket :: INT) AS wickets_lost,
               SUM(over_number) AS overs_completed
-  FROM        {{REF('stg-deliveries')}}
+  FROM        {{ref('stg_deliveries')}}
   GROUP BY    match_id,
               innings,
               batting_team
@@ -50,7 +50,7 @@ SELECT        m.match_id,
               f2.innings_total AS second_innings_total,
               f2.wickets_lost AS second_innings_wickets,
               f2.overs_completed AS second_innings_overs
-FROM          {{REF('stg-matches')}} m
+FROM          {{ref('stg_matches')}} m
 LEFT JOIN     first_innings f1
 ON            m.match_id = f1.match_id
 LEFT JOIN     second_innings f2

@@ -32,8 +32,8 @@ bowling AS (
               bowling_team AS team,
 
               -- legal deliveries only (no wides/noballs for over count)
-              SUM(CASE WHEN no_balls = 0 AND wides = 0 THEN 1 ELSe 0 END) AS legal_balls,
-              SUM(runs_offbat + extras) AS runs_conceded,
+              SUM(CASE WHEN noballs = 0 AND wides = 0 THEN 1 ELSe 0 END) AS legal_balls,
+              SUM(runs_off_bat + extras) AS runs_conceded,
               SUM(CASE WHEN is_wicket AND wicket_type NOT IN ('run out', 'retired hurt', 'obstructing the field') THEN 1 ELSE 0 END) AS wickets,
               COUNT(DISTINCT match_id) AS matches_bowled,
               SUM(CASE WHEN is_dot_ball THEN 1 ELSE 0 END) AS dot_balls_bowled

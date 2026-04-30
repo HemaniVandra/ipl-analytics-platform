@@ -10,9 +10,9 @@ cleaned AS (
             venue,
             CAST(innings AS INT) AS innings,
 
-            -- -- parse over and ball from "1.1" format
-            -- CAST(split(ball, '\\.')[0] AS INT) AS over_number,
-            -- CAST(split(ball, '\\.')[1] AS INT) AS ball_number,
+            -- parse over and ball from "1.1" format
+            over_number,
+            ball_number,
 
             batting_team,
             bowling_team,
@@ -34,6 +34,8 @@ cleaned AS (
             is_six,
             is_dot_ball,
             is_wicket,
+            NULLIF(wicket_type, '')                  as wicket_type,
+            NULLIF(player_dismissed, '')             as player_dismissed,
             phase
   FROM      source
   WHERE     match_id IS NOT NULL

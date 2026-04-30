@@ -15,3 +15,15 @@ env/
 __pycache__/
 *.py[cod]
 *$py.class
+target/
+
+# Docker
+postgres-data/
+
+# Airflow runtime logs
+logs/
+
+# DBT packages and targets
+dbt/dbt_packages/*
+dbt/target/*
+dbt/profiles.yml

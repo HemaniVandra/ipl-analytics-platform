@@ -1,0 +1,39 @@
+dbt/
+├── dbt_project.yml
+├── packages.yml
+│
+├── models/
+│   ├── staging/
+│   │   ├── stg_deliveries.sql
+│   │   ├── stg_matches.sql
+│   │   ├── stg_players.sql
+│   │   └── schema.yml
+│   └── gold/
+│       ├── player_season_stats.sql
+│       ├── team_win_rates.sql
+│       ├── venue_avg_scores.sql
+│       ├── head_to_head.sql
+│       ├── bowler_economy.sql
+│       ├── match_summary.sql
+│       └── schema.yml
+│
+├── macros/
+│   └── generate_schema_name.sql    ← written now
+│
+└── tests/
+    ├── assert_one_active_player_record.sql    ← written now
+    ├── assert_valid_over_numbers.sql          ← written now
+    ├── assert_winner_in_teams.sql             ← written now
+    ├── assert_no_negative_runs.sql            ← written now
+    └── assert_gold_player_stats_positive.sql  ← written now
+
+
+dbt_project.yml    → master config — project name, paths, materialisation
+profiles.yml       → Databricks connection — host, token, HTTP path
+packages.yml       → third party packages — dbt_utils for extra tests
+models/staging/    → thin views over Silver — stable contract layer
+models/gold/       → business logic SQL — writes Gold Delta tables
+schema.yml         → tests + documentation — one file does both
+macros/            → reusable SQL functions — called inside models
+tests/             → custom SQL assertions — complex data quality checks
+target/            → auto-generated output — never commit this

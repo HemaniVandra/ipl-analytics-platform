@@ -4,16 +4,17 @@ config-version: 2
 
 profile: ipl_databricks
 
-modell-paths: ["models"]
+model-paths: ["models"]
 macro-paths: ["macros"]
 
 models :
   ipl_analytics:
     staging:
       +materialized: view
-      +schema: ipl_catalog.silver
+      +catalog: ipl_catalog
+      +schema: silver
     gold:
       +materialized: table
-      +schema: ipl_catalog.gold
-      +file-format: delta
-      +location-root: /ipl_catalog/gold
+      +catalog: ipl_catalog
+      +schema: gold
+      +file_format: delta

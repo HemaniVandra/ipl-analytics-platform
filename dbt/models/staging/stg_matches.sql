@@ -18,7 +18,8 @@ cleaned AS (
               result AS match_result,
               result_margin,
               margin_type,
-              toss_winner_won
+              toss_winner_won,
+              is_dls
   FROM        source
   WHERE       match_id IS NOT NULL
 )
