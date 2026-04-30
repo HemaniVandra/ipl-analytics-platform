@@ -1,0 +1,9 @@
+ipl-analytics-platform/
+└── expectations/
+    ├── great_expectations.yml      ← main config
+    ├── checkpoints/
+    │   └── nightly_checkpoint.yml  ← runs in Airflow DAG
+    └── suites/
+        ├── deliveries_suite.json   ← written by our script
+        ├── matches_suite.json
+        └── players_suite.json
