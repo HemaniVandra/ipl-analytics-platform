@@ -29,7 +29,7 @@ models:
           - not_null
           - accepted_values:
               arguments:
-                values: ['powerplay', 'middle', 'death']
+                values: ['powerplay', 'middle', 'death', 'super_over']
 
   - name: stg_matches
     description: >
